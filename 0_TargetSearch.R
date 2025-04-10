@@ -2,7 +2,7 @@
 # Version 2023-04-13
 # written by Dr. Dariusz Kruszka and Mr. Dennis Psaroudakis, IPK Gatersleben. Modified by Dr. Ronja Wonneberger, SLU.
 
-setwd("/data/home/ronja.wonneberger/Projects/CresWheat/")
+
 
 ############ 1. Load packages #################################################
 
@@ -15,19 +15,19 @@ library(magrittr)
 ############ 2. Import files ##################################################
 
 # prepare path for calculation
-cdf.path <- file.path("./Data/Nordrome_Metabolomics")
-sample.file <- file.path(cdf.path,"Sample_list_outlier127.txt")
+cdf.path <- file.path("./path")
+sample.file <- file.path(cdf.path,"Sample_list_nooutliers_blanks.txt")
 samples <- ImportSamples(sample.file, CDFpath = cdf.path, RIpath = cdf.path)
 rim.file  <- file.path(cdf.path, "RIMS.txt")
 
 # read phenodata (sample metadata and weights)
-pheno.table<-read_csv(paste0(cdf.path, "/Annotation_outlier127.csv"))
+pheno.table<-read_csv(paste0(cdf.path, "/Annotation_nooutliers_blanks.csv"))
 pheno.table<-column_to_rownames(pheno.table,"rawname")
 
 ############ 3. Import and check FAMEs (RIMs) #################################
 
 rimLimits <- ImportFameSettings(rim.file, mass = 87)
-pdf("Results/RIMS_outliers.pdf",width=8,height=8) #for all samples
+pdf("Results/RIMS.pdf",width=8,height=8) #for all samples
 for(i in 1:length(samples)) {
   print(paste("Plotting RIMs for sample", i, "of", length(samples)))
   checkRimLim(samples[i], rimLimits)
@@ -35,15 +35,15 @@ for(i in 1:length(samples)) {
 dev.off()
 
 
-# # Plot a few randomly selected samples:
-# rimLimits <- ImportFameSettings(rim.file, mass = 87)
-# pdf("Results/RIMS_subset.pdf",width=8,height=8) #for all samples
-# select_plots<-sample(1:length(samples), 20)
-# for(i in select_plots) {
-#   print(paste("Plotting RIMs for sample", i, "of", length(samples)))
-#   checkRimLim(samples[i], rimLimits)
-# }
-# dev.off()
+# Plot a few randomly selected samples:
+rimLimits <- ImportFameSettings(rim.file, mass = 87)
+pdf("Results/RIMS_subset.pdf",width=8,height=8) #for all samples
+select_plots<-sample(1:length(samples), 20)
+for(i in select_plots) {
+  print(paste("Plotting RIMs for sample", i, "of", length(samples)))
+  checkRimLim(samples[i], rimLimits)
+}
+dev.off()
 
 ############ 4. File conversion, baseline correction, Peak finding, RIcorrection ####
 
@@ -60,7 +60,7 @@ samples <- ncdf4Convert(samples, path="Baseline_corrected", baseline=TRUE, bslin
 RImatrix <- RIcorrect(samples, rimLimits, IntThreshold = 50, pp.method = "ppc", Window = 15, showProgressBar=T, massRange=c(85,500))
 
 # Outliers visualization
-outliers <- FAMEoutliers(samples, RImatrix, threshold = 5, pdffile ="Results/outliers1_outliers.pdf")
+outliers <- FAMEoutliers(samples, RImatrix, threshold = 5, pdffile ="Results/outliers1.pdf")
 
 ############ 5. Targeted Analysis #############################################
 
@@ -76,10 +76,10 @@ RIdev(lib)[352,2]<-2000
 RIdev(lib)[352,3]<-1000
 
 # find median RI per metabolite and update the library with it
-lib <- medianRILib(samples, lib, makeReport=T, showProgressBar=T,pdfFile = "Results/medianLibRep_split_outliers.pdf")
+lib <- medianRILib(samples, lib, makeReport=T, showProgressBar=T,pdfFile = "Results/medianLibRep_split.pdf")
 # normalize RI
 cor_RI <- sampleRI(samples, lib, r_thres = 0.95, method = "dayNorm", minPairObs = 6, showProgressBar = T, 
-                   makeReport = T, pdfFile = "Results/sampleRI_Rep_outliers.pdf")
+                   makeReport = T, pdfFile = "Results/sampleRI_Rep.pdf")
 
 
 # find the peaks based on lib and save RI and intensity 
@@ -90,21 +90,16 @@ met.Intensity <- Intensity(peakData)
 # create profile and write it
 MetabProfile <- Profile(samples, lib, peakData, r_thres = 0.95,method = "dayNorm")
 finalProfile <- ProfileCleanUp(MetabProfile, timeSplit = 500, r_thres = 0.95)
-Write.Results(lib,finalProfile,quantMatrix='maxint', prefix="Results/TargetSearch_outliers")
+Write.Results(lib,finalProfile,quantMatrix='maxint', prefix="Results/TargetSearch")
 
 # spectra visualization
-plotAllSpectra(lib, peakData, type = "ht",pdfFile="Results/spectra_outliers.pdf",width = 10, height = 8)
+plotAllSpectra(lib, peakData, type = "ht",pdfFile="Results/spectra.pdf",width = 10, height = 8)
 
 # write data
 ## correlating metabolites
 met.final <- quantMatrix(lib, finalProfile)
 ## all metabolites in the library
 met.all   <- quantMatrix(lib, MetabProfile)
-
-met.final<-t(met.final)
-met.all<-t(met.all)
-dimnames(met.final)[2]<-gsub(".cdf", "", rownames(pheno.table)[1])
-dimnames(met.all)[2]<-gsub(".cdf", "", rownames(pheno.table)[1])
 
 dimnames(met.final)[1]<-attributes(met.final)[6]
 dimnames(met.all)[1]<-attributes(met.all)[6]
@@ -115,8 +110,8 @@ dimnames(met.all)[1]<-attributes(met.all)[6]
 rownames(met.all) = ave(rownames(met.all), rownames(met.all), FUN=function(x) if (length(x)>1) paste0(x[1], ' (copy ', seq_along(x), ')') else x[1])
 rownames(met.final) = ave(rownames(met.final), rownames(met.final), FUN=function(x) if (length(x)>1) paste0(x[1], ' (copy ', seq_along(x), ')') else x[1])
 makeDF <- function(x) cbind(quantMass=attr(x,"quantMass"),isSelMass=attr(x,"isSelMass"), x)
-write.table(makeDF(met.final), file='Results/TargetSearch_outliers.final.txt', sep='\t', quote=F)
-write.table(makeDF(met.all), file='Results/TargetSearch_outliers.all.txt', sep='\t', quote=F)
+write.table(makeDF(met.final), file='Results/TargetSearch.final.txt', sep='\t', quote=F)
+write.table(makeDF(met.all), file='Results/TargetSearch.all.txt', sep='\t', quote=F)
 
 ############ 6. Normalization ###############################
 
@@ -136,7 +131,7 @@ plot_histogram <- function(SDsel, data.stage) {
   #histogram
   QMAt.h<-SDsel
   QMAt.h[is.na(QMAt.h)]<-0
-  png(paste0("Results/histogram_",data.stage,"_outliers.png"), res = 300, units = "cm", width = 15, height = 10)
+  png(paste0("Results/histogram_",data.stage,".png"), res = 300, units = "cm", width = 15, height = 10)
   raw.hist<-hist.default(QMAt.h, main = paste0("histogram of ",data.stage," data, RSD = ", SD_percent_av, "%"))
   dev.off()
 }
@@ -183,9 +178,9 @@ if(normalize.against.IS) {
   norm_rib<-(QMAt*IS.Vec)
   
   norm_rib <- norm_rib[ ,!colnames(norm_rib) %in% c(IS)] # Eliminates IS (now identical everywhere)
-  write.csv(t(norm_rib), "Results/PeakTable_IS_normalized_outliers.csv")
+  write.csv(t(norm_rib), "Results/PeakTable_IS_normalized.csv")
   
-  plot_histogram(norm_rib, "IS_normalized_outliers")
+  plot_histogram(norm_rib, "IS_normalized")
 } else {
   IS.Vec = 1
   norm_rib <- QMAt
@@ -199,14 +194,13 @@ if(normalize.against.weight) {
   weight.Vec = median(pheno.table$`Amount [mg(FW)]  (initial weight)`)/pheno.table$`Amount [mg(FW)]  (initial weight)`
   norm_weight<-(norm_rib * weight.Vec)
   if(normalize.against.IS) {
-    write.csv(t(norm_weight), "Results/PeakTable_IS_Weight_normalized_outlier127.csv")
-    plot_histogram(norm_weight, "IS_and_weight_normalized_outliers")
+    write.csv(t(norm_weight), "Results/PeakTable_IS_Weight_normalized.csv") # Additional file 5 sheet 2
+    plot_histogram(norm_weight, "IS_and_weight_normalized")
   } else {
-    write.csv(t(norm_weight), "Results/PeakTable_Weight_normalized_outlier127.csv")
-    plot_histogram(norm_weight, "weight_normalized_outliers")
+    write.csv(t(norm_weight), "Results/PeakTable_Weight_normalized.csv")
+    plot_histogram(norm_weight, "weight_normalized")
   }
 } else {
   weight.Vec = 1
   norm_weight <- norm_rib
 }
-
