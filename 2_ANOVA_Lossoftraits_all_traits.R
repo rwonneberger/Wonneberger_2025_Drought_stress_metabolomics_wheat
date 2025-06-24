@@ -100,7 +100,7 @@ output$p_Genotype_Treatment<-signif(as.numeric(output$p_Genotype_Treatment), 3)
 
 names(output)[1]<-"Trait_Day"
 
-fwrite(output, "Results/AdditionalFile10.txt", sep="\t")
+fwrite(output, "Results/AdditionalFile11.txt", sep="\t")
 
 
 
@@ -154,7 +154,7 @@ genotype_mean_mean<-genotype_mean[,.(biomass=mean(biomass),
 ),
 by=.(DAS, DAD)]
 
-fwrite(genotype_mean_mean, "Results/AdditionalFile11.txt", sep="\t")
+fwrite(genotype_mean_mean, "Results/AdditionalFile12.txt", sep="\t")
 
 
 

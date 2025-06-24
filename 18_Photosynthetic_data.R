@@ -196,7 +196,7 @@ p3<-ggplot(df_out3, aes(x=Treatment, y=value)) + geom_violin()+ geom_boxplot(wid
 
 
 
-tiff(paste0("Figs/AdditionalFile12.tiff"), width=17, height=22, compression = "lzw", res=600, units="cm")
+tiff(paste0("Figs/AdditionalFile13.tiff"), width=17, height=22, compression = "lzw", res=600, units="cm")
 
 ggarrange(p1, p2, p3, ncol=1, labels=c("a", "b", "c"))
 dev.off()

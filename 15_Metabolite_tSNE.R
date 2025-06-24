@@ -127,7 +127,7 @@ height = (1-legend_y)/2
 pos1 = legend_y
 pos2 = pos1 + height
 
-tiff("Figs/AdditionalFileY.tiff", width=20, height=22, units="cm", compression = "lzw",res=600)
+tiff("Figs/AdditionalFile15.tiff", width=20, height=22, units="cm", compression = "lzw",res=600)
 ggdraw()+
   draw_plot(p1, x = 0, y = pos2, width = 0.5, height = height)+
   draw_plot(p2, x = 0.5, y = pos2, width = 0.5, height = height)+

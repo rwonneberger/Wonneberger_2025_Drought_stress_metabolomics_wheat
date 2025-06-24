@@ -214,7 +214,7 @@ corr<-rbind(corr_drought, corr_control)
 
 corr$Day2<-corr$Day-21
 
-tiff(paste0("Figs/AdditionalFile7.tiff"), width=17, height=12, compression = "lzw", res=600, units="cm")
+tiff(paste0("Figs/AdditionalFile8.tiff"), width=17, height=12, compression = "lzw", res=600, units="cm")
 ggplot(corr, aes(x=Day2, y=Corr, group= Treatment)) +   geom_line(aes(col = Treatment)) + geom_point(aes(col = Treatment), size=0.5) + theme_classic()+ 
   theme(panel.grid.minor = element_line(colour = "grey90"), panel.grid.major = element_line(colour = "grey90"), panel.border = element_rect(fill=NA))+ facet_wrap(~Trait, scales="free_y", ncol=4) +xlab("DAD")+ylab("Spearman correlation") +  geom_vline(xintercept=45-21, linetype="dashed", color = "red") + theme(legend.position ="bottom")
 dev.off()
@@ -240,7 +240,7 @@ heri<-rbind(heri_drought, heri_control)
 
 heri$Day2<-heri$Day-21
 
-tiff(paste0("Figs/AdditionalFile6.tiff"), width=17, height=12, compression = "lzw", res=600, units="cm")
+tiff(paste0("Figs/AdditionalFile7.tiff"), width=17, height=12, compression = "lzw", res=600, units="cm")
 ggplot(heri, aes(x=Day2, y=HeritabilityData, group= Treatment)) +   geom_line(aes(col = Treatment)) + geom_point(aes(col = Treatment), size=0.5) + theme_classic()+ 
   theme(panel.grid.minor = element_line(colour = "grey90"), panel.grid.major = element_line(colour = "grey90"), panel.border = element_rect(fill=NA))+ facet_wrap(~Trait, scales="free_y", ncol=4) +ylab("Broad sense heritability (H2)") +  geom_vline(xintercept=45-21, linetype="dashed", color = "red")+ theme(legend.position ="bottom")
 dev.off()

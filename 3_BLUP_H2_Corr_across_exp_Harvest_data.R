@@ -230,7 +230,7 @@ names(all_df)[c(2, 9)]<-c("Spearman correlation", "Broad sense heritability (H2)
 
 all_df%<>%select(Trait, Treatment, "Spearman correlation", "Broad sense heritability (H2)")%>%melt()
 
-tiff(paste0("Figs/AdditionalFile8.tiff"), width=8, height=10, compression = "lzw", res=600, units="cm")
+tiff(paste0("Figs/AdditionalFile9.tiff"), width=8, height=10, compression = "lzw", res=600, units="cm")
 ggplot(all_df, aes(x=Trait, y=value, fill=Treatment)) + geom_col(position = "dodge") + facet_wrap(~variable, ncol=1) + theme_classic()+ 
   theme(panel.grid.minor = element_line(colour = "grey90"), panel.grid.major = element_line(colour = "grey90"), panel.border = element_rect(fill=NA))+x_axis_90_degrees + theme(axis.title=element_blank(), legend.position ="bottom") 
 dev.off()

@@ -103,7 +103,7 @@ df_sub1$DAD<-df_sub1$DAS-21
 
 scaleFUN <- function(x) sprintf("%.0f", x)
 
-tiff("Figs/AdditionalFile9.tiff", height=15, width=17, units="cm", res=600, compression = "lzw")
+tiff("Figs/AdditionalFile10.tiff", height=15, width=17, units="cm", res=600, compression = "lzw")
 
 ggplot(df_sub1, aes(x=DAD, y=trait_mean, group=Treatment)) +     
   geom_line( aes( col = Treatment)) + 

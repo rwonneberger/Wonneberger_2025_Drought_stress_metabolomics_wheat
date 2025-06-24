@@ -48,7 +48,7 @@ for (i in 1:4){
 
 
 
-tiff("Figs/AdditionalFile16.tiff", width = 17, height=20 ,units="cm", res=600, compression = "lzw")
+tiff("Figs/AdditionalFile18.tiff", width = 17, height=20 ,units="cm", res=600, compression = "lzw")
 ggarrange(plotlist[[1]], plotlist[[2]], plotlist[[3]], plotlist[[4]], plotlist[[5]], plotlist[[6]], plotlist[[7]], plotlist[[8]], ncol=2, nrow=4, labels = c("a", "b", "c", "d", "e", "f", "g", "h"))
 dev.off()
 

@@ -534,6 +534,6 @@ gb_p2 = grid.grabExpr(draw(p2))
 gb_p3 = grid.grabExpr(draw(p3))
 gb_p4 = grid.grabExpr(draw(p4))
 
-tiff("Figs/AdditionalFile17.tiff", height=18, width=28, units="cm", res=300)
+tiff("Figs/AdditionalFile19.tiff", height=18, width=28, units="cm", res=300)
 ggarrange(gb_p1, gb_p2, gb_p3, gb_p4, ncol=2, nrow=2, labels=c("a", "b", "c", "d"))
 dev.off()

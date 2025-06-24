@@ -302,7 +302,7 @@ fontsize_text=7
 knownmet<-ggplot(norm_data_melt_avg%>%filter(variable%in%mets), aes(x=DAD, y=value_mean, group=Treatment, color=Treatment)) + geom_line()+ facet_grid(variable~Geno, scales="free_y") +  theme_classic()+ 
   theme(panel.grid.minor = element_line(colour = "grey90"), panel.grid.major = element_line(colour = "grey90"), panel.border = element_rect(fill=NA))+ ylab("Row-normalized peak intensity")+theme(legend.position = "bottom")+ theme(text = element_text(size = fontsize_text),axis.text.x = element_text(size = fontsize_text-1))
 
-tiff(paste0(writetopath, "Figs/AdditionalFile13.tiff"), width=17, height=20, units="cm", compression = "lzw",res=600)
+tiff(paste0(writetopath, "Figs/AdditionalFile14.tiff"), width=17, height=20, units="cm", compression = "lzw",res=600)
 
 print(knownmet)
 dev.off()
